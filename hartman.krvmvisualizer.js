@@ -27,8 +27,7 @@
 
 		_.recalculateDimensions();
 
-		_.canvasContext.fillStyle = _.options.backgroundColor;
-		_.canvasContext.fillRect(0, 0, _.width, _.height);
+		_.resetCanvas();
 
 		_.draw();
 
@@ -64,6 +63,8 @@
 			_.displayOriginX = Math.floor(_.width / 2);
 			_.originX = Math.floor(_.width / 2 - _.barWidth / 2);
 		}
+
+		_.resetCanvas();
 		
 	}
 
@@ -77,13 +78,15 @@
 
 	}
 
-	Hartman.KRVMVisualizer.prototype.resetCanvas = function(originX, originY) {
+	Hartman.KRVMVisualizer.prototype.resetCanvas = function(alpha) {
 
 		var _ = this;
 
+		alpha = (typeof alpha === 1.0) ? 'default' : alpha;
+
 		// reset the background
 		_.canvasContext.save();
-		_.canvasContext.globalAlpha = _.options.fadeRate;
+		_.canvasContext.globalAlpha = alpha;
 		_.canvasContext.fillStyle = _.options.backgroundColor;
 		_.canvasContext.fillRect(0, 0, _.width, _.height);
 		_.canvasContext.restore();
@@ -91,7 +94,7 @@
 		if (_.options.showAxes) {
 
 			_.canvasContext.save();
-			_.canvasContext.globalAlpha = _.options.fadeRate;
+			_.canvasContext.globalAlpha = alpha;
 			_.canvasContext.strokeStyle = _.options.axisColor;
 			_.canvasContext.moveTo(0, _.originY);
 			_.canvasContext.lineTo(_.width, _.originY);
@@ -116,7 +119,7 @@
 		var offsetX;
 		var offsetY;
 
-		_.resetCanvas();
+		_.resetCanvas(_.options.fadeRate);
 
 		for (var i = 0; i < _.bufferLength; i++) {
 
