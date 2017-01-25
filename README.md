@@ -6,3 +6,5 @@ I've been tinkering with the Web Audio APIs and thought it would be less boring 
 Usage: 
 
 var vis = new Hartman.KRVMVisualizer(canvasElement, analyserNode, { options });
+
+<a href="https://mikehartman.github.io/kr-vm-visualizer/demo/index.html">Run the demo live</a>
