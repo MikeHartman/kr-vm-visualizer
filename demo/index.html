@@ -1,8 +1,48 @@
 <html>
 <head>
 <script src="../hartman.krvmvisualizer.js"></script>
+<script>
+var audioContext;
+window.addEventListener('load', init, false);
+  
+function grabMic(audioContext, audioAnalyser) {
+
+	navigator.getUserMedia  = navigator.getUserMedia ||
+                          navigator.webkitGetUserMedia ||
+                          navigator.mozGetUserMedia ||
+                          navigator.msGetUserMedia;
+
+	navigator.getUserMedia({audio: true}, function(localMediaStream) {
+		var microphone = audioContext.createMediaStreamSource(localMediaStream);
+		microphone.connect(audioAnalyser);
+	}, function(e) {
+		console.log('Error...', e);
+	});
+
+}
+  
+function init() {
+    // Fix up for prefixing
+    window.AudioContext = window.AudioContext||window.webkitAudioContext;
+    audioContext = new AudioContext();
+	audioAnalyser = audioContext.createAnalyser();
+	audioAnalyser.fftSize = 32;
+
+	var visCanvas = document.getElementById("visCanvas");
+
+	vis = new Hartman.KRVMVisualizer(visCanvas, audioAnalyser, {
+		barSpacing: 10,
+		mirrorVert: true,
+		mirrorHoriz: true,
+		fadeRate: .3,
+		barColor: '#ff004e'
+	});
+
+	grabMic(audioContext, audioAnalyser)
+}
+</script>
 </head>
 <body>
-TEST
+<canvas id="visCanvas" width="400px" height="400px" style="border: 1px solid black"></canvas>
 </body>
 </html>
