@@ -108,9 +108,21 @@
 
 	}
 
+	Hartman.KRVMVisualizer.prototype.checkForCanvasSizeChange = function() {
+
+		var _ = this;
+
+		if (_.canvasElement.scrollWidth !== _.width || _.canvasElement.scrollHeight !== _.height) {
+			_.recalculateDimensions();
+		}
+
+	}
+
 	Hartman.KRVMVisualizer.prototype.draw = function() {
 
 		var _ = this;
+
+		_.checkForCanvasSizeChange();
 
 		requestAnimationFrame(_.draw.bind(_));
 		_.audioAnalyser.getByteFrequencyData(_.dataArray);
