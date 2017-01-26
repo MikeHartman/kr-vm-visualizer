@@ -7,10 +7,13 @@
 		_.canvasElement = canvasElement;
 		_.audioAnalyser = audioAnalyser;
 		_.options = Object.assign({
-			barSpacing: 1,
+			barHorizSpacing: 1,
 			mirrorHoriz: true,
 			mirrorVert: true,
 			biteMode: false,
+			discreteMode: false,
+			barCellCount: 9,
+			barCellVertSpacing: 2,
 			amplitudeMultiplier: 1,
 			compressionFactor: 1,
 			threshold: 10,
@@ -55,6 +58,8 @@
 		if (_.options.mirrorVert) {
 			_.originY = Math.floor(_.height / 2);
 		}
+
+		_.barCellHeight = Math.floor((_.originY - (_.options.barCellCount * _.options.barCellVertSpacing)) / _.options.barCellCount);		
 
 		_.originX = 0;
 		_.displayOriginX = 0;
@@ -135,7 +140,7 @@
 
 		for (var i = 0; i < _.bufferLength; i++) {
 
-			offsetX = (_.barWidth + _.options.barSpacing) * i;
+			offsetX = (_.barWidth + _.options.barHorizSpacing) * i;
 
 			// values in dataArray are in the range 0-255
 
@@ -185,7 +190,47 @@
 
 		var _ = this;
 
-		_.canvasContext.fillRect(x, y, w, h);
+		if (_.options.discreteMode) {
+
+			_.drawDiscreteBar(x, y, w, h);
+
+		} else {
+			_.canvasContext.fillRect(x, y, w, h);
+		}
+
+	}
+
+	Hartman.KRVMVisualizer.prototype.drawDiscreteBar = function(x, y, w, h) {
+
+		var _ = this;
+
+		var heightInCells = Math.round((h - (_.options.barCellVertSpacing / 2)) / (_.barCellHeight + _.options.barCellVertSpacing));
+
+		var offsetY = y + (_.options.barCellVertSpacing / 2);
+		if (y < _.originY) {
+			offsetY = _.originY - ((heightInCells * _.barCellHeight) + ((heightInCells - .5) * _.options.barCellVertSpacing));
+		}
+		var edgeCell = false;
+
+		for (var i = 0; i < heightInCells; i++) {
+
+			edgeCell = ((offsetY < _.originY && i === 0) ||
+				(offsetY > _.originY && i === (heightInCells - 1)));
+
+			if (edgeCell) {
+				_.canvasContext.save();
+				_.canvasContext.globalAlpha = .5;
+			}
+
+			_.canvasContext.fillRect(x, offsetY, w, _.barCellHeight);
+
+			if (edgeCell) {
+				_.canvasContext.restore();
+			}
+
+			offsetY += _.barCellHeight + _.options.barCellVertSpacing;			
+
+		}
 
 	}
 

@@ -31,11 +31,12 @@ function init() {
 	var visCanvas = document.getElementById("visCanvas");
 
 	vis = new Hartman.KRVMVisualizer(visCanvas, audioAnalyser, {
-		barSpacing: 10,
+		barHorizSpacing: 10,
 		mirrorVert: true,
 		mirrorHoriz: true,
 		barColor: '#ff004e',
-		compressionFactor: 3
+		compressionFactor: 3,
+		discreteMode: true
 	});
 
 	grabMic(audioContext, audioAnalyser)
