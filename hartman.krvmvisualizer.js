@@ -10,6 +10,7 @@
 			barSpacing: 1,
 			mirrorHoriz: true,
 			mirrorVert: true,
+			biteMode: false,
 			amplitudeMultiplier: 1,
 			compressionFactor: 1,
 			threshold: 10,
@@ -129,7 +130,6 @@
 
 		var barHeight;
 		var offsetX;
-		var offsetY;
 
 		_.resetCanvas(_.options.fadeRate);
 
@@ -142,22 +142,50 @@
 			var heightScalingFactor = _.height / Math.pow(255, _.options.compressionFactor);
 			barHeight = Math.floor((Math.pow(_.dataArray[i], _.options.compressionFactor)) * heightScalingFactor * _.options.amplitudeMultiplier);
 
-			offsetY = barHeight;
 			if (_.options.mirrorVert) {
-				offsetY = Math.floor(offsetY / 2);
+				barHeight = Math.floor(barHeight / 2);
 			}
 
 			if (barHeight > _.options.threshold) {
 
 				_.canvasContext.fillStyle = _.options.barColor;
-				_.canvasContext.fillRect(_.originX + offsetX , _.originY - offsetY, _.barWidth, barHeight);
+				if (_.options.biteMode && i % 2 == 1) { // draw from top and bottom
+					_.drawBar(_.originX + offsetX, 0, _.barWidth, barHeight);
+					if (_.options.mirrorVert) {
+						_.drawBar(_.originX + offsetX, _.height - barHeight, _.barWidth, barHeight);
+					}
+				} else { // draw from origin
+					_.drawBar(_.originX + offsetX , _.originY - barHeight, _.barWidth, barHeight);
+					if (_.options.mirrorVert) {
+						_.drawBar(_.originX + offsetX , _.originY, _.barWidth, barHeight);
+					}
+				}
+
 				if (_.options.mirrorHoriz) {
-					_.canvasContext.fillRect(_.originX - offsetX, _.originY - offsetY, _.barWidth, barHeight);
+					if (_.options.biteMode && i % 2 == 1) { // draw from top and bottom
+						_.drawBar(_.originX - offsetX, 0, _.barWidth, barHeight);
+						if (_.options.mirrorVert) {
+							_.drawBar(_.originX - offsetX, _.height - barHeight, _.barWidth, barHeight);
+						}
+					} else { // draw from origin
+						_.drawBar(_.originX - offsetX, _.originY - barHeight, _.barWidth, barHeight);
+						if (_.options.mirrorVert) {
+							_.drawBar(_.originX - offsetX, _.originY, _.barWidth, barHeight);
+						}
+					}
 				}
 
 			}
 
 		}
+
+	}
+
+	Hartman.KRVMVisualizer.prototype.drawBar = function(x, y, w, h) {
+
+		var _ = this;
+
+		_.canvasContext.fillRect(x, y, w, h);
 
 	}
 
