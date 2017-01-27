@@ -28,6 +28,8 @@
 
 		_.bufferLength = _.audioAnalyser.frequencyBinCount;
 		_.dataArray = new Uint8Array(_.bufferLength);
+		_.maxFA = 0;
+		_.minFA = 0;
 
 		_.recalculateDimensions();
 
@@ -141,6 +143,13 @@
 		for (var i = 0; i < _.bufferLength; i++) {
 
 			offsetX = (_.barWidth + _.options.barHorizSpacing) * i;
+			
+			if (_.dataArray[i] > _.maxFA) {
+				_.maxFA = _.dataArray[i];
+			}
+			if (_.dataArray[i] < _.minFA) {
+				_.minFA = _.dataArray[i];
+			}
 
 			// values in dataArray are in the range 0-255
 
