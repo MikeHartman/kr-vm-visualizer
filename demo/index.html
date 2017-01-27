@@ -14,7 +14,7 @@ function grabMic(audioContext, audioAnalyser) {
 
 	navigator.getUserMedia({audio: true}, function(localMediaStream) {
 		var microphone = audioContext.createMediaStreamSource(localMediaStream);
-		microphone.connect(audioAnalyser);
+		microphone.connect(audioAnalyser, 0);
 	}, function(e) {
 		console.log('Error...', e);
 	});
