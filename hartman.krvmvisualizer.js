@@ -205,11 +205,18 @@
 		var _ = this;
 
 		var heightInCells = Math.round((h - (_.options.barCellVertSpacing / 2)) / (_.barCellHeight + _.options.barCellVertSpacing));
+		var blankHeightInCells = _.options.barCellCount - heightInCells;
 
-		var offsetY = y + (_.options.barCellVertSpacing / 2);
-		if (y < _.originY) {
+		var offsetY = _.originY + (_.options.barCellVertSpacing / 2); // bars growing down from origin
+		if (y < _.originY && y > 0) { // bars growing up from origin
 			offsetY = _.originY - ((heightInCells * _.barCellHeight) + ((heightInCells - .5) * _.options.barCellVertSpacing));
+		} else if (y <= 0) { // bars growing down from top toward origin
+			offsetY = _.originY - ((_.options.barCellCount * _.barCellHeight) + ((_.options.barCellCount - .5) * _.options.barCellVertSpacing));
+		} else if (y > _.originY) { // bars growing up from bottom toward origin
+			offsetY = _.originY + ((blankHeightInCells * _.barCellHeight) + ((blankHeightInCells + .5) * _.options.barCellVertSpacing));
 		}
+
+
 		var edgeCell = false;
 
 		for (var i = 0; i < heightInCells; i++) {
